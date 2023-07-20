@@ -5,7 +5,7 @@ import { DragDropContext, DropResult, Droppable } from "react-beautiful-dnd";
 import Column from "./Column";
 
 function Board() {
-  const [board, getBoard] = useBoardStore((state) => [
+  const [board, getBoard] = useBoardStore((state: any) => [
     state.board,
     state.getBoard,
   ]);
@@ -28,9 +28,11 @@ function Board() {
                 gap-5 max-w-7xl mx-auto"
           >
             {/* rendering all the columns */}
-            {Array.from(board.columns.entries()).map(([id, column], index) => (
-              <Column key={id} id={id} todos={column.todos} index={index} />
-            ))}
+            {Array.from(board.columns.entries()).map(
+              ([id, column]: any, index) => (
+                <Column key={id} id={id} todos={column.todos} index={index} />
+              )
+            )}
           </div>
         )}
       </Droppable>
