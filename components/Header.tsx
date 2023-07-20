@@ -5,7 +5,7 @@ import React from "react";
 import { AiOutlineSearch } from "react-icons/ai";
 import { FaUserCircle } from "react-icons/fa";
 
-import Avatar from "react-avatar";
+// import Avatar from "react-avatar";
 const Header = () => {
   return (
     <header>
@@ -36,7 +36,7 @@ const Header = () => {
           </form>
 
           {/* Avatar */}
-          <Avatar name="Akash" round size="50" color="#0055D1" />
+          {/* <Avatar name="Akash" round size="50" color="#0055D1" /> */}
         </div>
       </div>
 
