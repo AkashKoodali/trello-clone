@@ -1,6 +1,8 @@
 import { Draggable, Droppable } from "react-beautiful-dnd";
 import TodoCard from "./TodoCard";
 import { FaPlusCircle } from "react-icons/fa";
+import { useBoardStore } from "@/store/BoardStore";
+import { useModalStore } from "@/store/ModalStore";
 
 type Props = {
   id: TypedColumn;
@@ -17,6 +19,17 @@ const idColumnText: {
 };
 
 const Column = ({ id, todos, index }: Props) => {
+  const [searchString, setNewTaskType] = useBoardStore((state) => [
+    state.searchString,
+    state.setNewTaskType,
+  ]);
+  const openModal = useModalStore((state) => state.openModal);
+
+  const handleAddTodo = () => {
+    setNewTaskType(id);
+    openModal();
+  };
+
   return (
     <Draggable draggableId={id} index={index}>
       {(provided) => (
@@ -41,33 +54,51 @@ const Column = ({ id, todos, index }: Props) => {
                     className="text-gray-500 bg-gray-200 rounded-full 
                   px-2 py-1 text-sm font-normal"
                   >
-                    {todos.length}
+                    {!searchString
+                      ? todos.length
+                      : todos.filter((todo) =>
+                          todo.title
+                            .toLowerCase()
+                            .includes(searchString.toLowerCase())
+                        ).length}
                   </span>
                 </h2>
 
                 <div className="space-y-2">
-                  {todos.map((todo, index) => (
-                    <Draggable
-                      key={todo.$id}
-                      draggableId={todo.$id}
-                      index={index}
-                    >
-                      {(provided) => (
-                        <TodoCard
-                          todo={todo}
-                          index={index}
-                          id={id}
-                          innerRef={provided.innerRef}
-                          draggableProps={provided.draggableProps}
-                          dragHandleProps={provided.dragHandleProps}
-                        />
-                      )}
-                    </Draggable>
-                  ))}
+                  {todos.map((todo, index) => {
+                    if (
+                      searchString &&
+                      !todo.title
+                        .toLowerCase()
+                        .includes(searchString.toLowerCase())
+                    )
+                      return null;
+                    return (
+                      <Draggable
+                        key={todo.$id}
+                        draggableId={todo.$id}
+                        index={index}
+                      >
+                        {(provided) => (
+                          <TodoCard
+                            todo={todo}
+                            index={index}
+                            id={id}
+                            innerRef={provided.innerRef}
+                            draggableProps={provided.draggableProps}
+                            dragHandleProps={provided.dragHandleProps}
+                          />
+                        )}
+                      </Draggable>
+                    );
+                  })}
                   {provided.placeholder}
 
                   <div className="flex items-end justify-end p-2">
-                    <button className="text-green-500 hover:text-green-600">
+                    <button
+                      onClick={handleAddTodo}
+                      className="text-green-500 hover:text-green-600"
+                    >
                       <FaPlusCircle className="h-10 w-10" />
                     </button>
                   </div>

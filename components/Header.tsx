@@ -1,12 +1,35 @@
 "use client";
 
+// import fetchSuggestion from "@/lib/fetchSuggestion";
+import { useBoardStore } from "@/store/BoardStore";
 import Image from "next/image";
-import React from "react";
+import React, { useState } from "react";
 import { AiOutlineSearch } from "react-icons/ai";
 import { FaUserCircle } from "react-icons/fa";
 
 // import Avatar from "react-avatar";
 const Header = () => {
+  const [board, searchString, setSearchString] = useBoardStore((state) => [
+    state.board,
+    state.searchString,
+    state.setSearchString,
+  ]);
+
+  const [loading, setLoading] = useState<boolean>(false);
+  const [suggestion, setSuggestion] = useState<string>("");
+
+  // useEffect(() => {
+  //   if (board.columns.size === 0) return;
+  //   setLoading(true);
+
+  //   const fetchSuggestionFun = async () => {
+  //     const suggestion = await fetchSuggestion(board);
+  //     setSuggestion(suggestion);
+  //     setLoading(false);
+  //   };
+  //   fetchSuggestionFun();
+  // }, [board]);
+
   return (
     <header>
       <div className="flex flex-col md:flex-row items-center p-5 bg-gray-500/10 rounded-b-2xl">
@@ -28,7 +51,9 @@ const Header = () => {
             <input
               type="text"
               placeholder="Search"
+              value={searchString}
               className="flex-1 outline-none p-2"
+              onChange={(e) => setSearchString(e.target.value)}
             />
             <button type="submit" hidden>
               Search
@@ -45,8 +70,13 @@ const Header = () => {
           className="flex items-center text-sm p-5 font-light pr-5 shadow-xl rounded-xl w-fit bg-white 
         italic max-w-3xl text-[#0055D1]"
         >
-          <FaUserCircle className="inline-block h-10 w-10 text-[#0055D1] mr-1" />
-          GPT is sunmarising your tasks for the day...
+          <FaUserCircle
+            className={`inline-block h-10 w-10 text-[#0055D1] mr-1 
+            ${loading && "animate-spin"}`}
+          />
+          {suggestion && !loading
+            ? suggestion
+            : "GPT is sunmarising your tasks for the day..."}
         </p>
       </div>
     </header>
